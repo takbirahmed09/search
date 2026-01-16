@@ -1,17 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from figlet import Figlet
 import re
-
-def print_figlet(text):
-    _____     _    _     _
-|_   _|_ _| | _| |__ (_)_ __
-  | |/ _` | |/ / '_ \| | '__|
-  | | (_| |   <| |_) | | |
-  |_|\__,_|_|\_\_.__/|_|_|
-    f = Figlet(font='standard')
-    print(f.renderText(text))
-
 def search_truecaller(phone_number):
     url = f"https://www.truecaller.com/search/{phone_number}"
     headers = {
