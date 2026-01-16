@@ -1,48 +1,53 @@
 import os
-import time
-import requests
-from bs4 import BeautifulSoup
+import json
+import asyncio
+from truecallerpy import search_phonenumber
 from colorama import Fore, Style
 
+# ব্যানার তৈরি
 def banner():
     os.system('clear')
-    os.system('figlet -f standard "Takbir Number Search" | lolcat 2>/dev/null || figlet "Takbir Number Search"')
-    print(f"{Fore.GREEN}🕵️‍♂️  Welcome to Takbir Number Search Tool{Style.RESET_ALL}")
-    print("-" * 45)
+    # Figlet ব্যবহার করে আপনার নাম দেওয়া ব্যানার
+    os.system('figlet -f standard "Takbir Number Search"')
+    print(f"{Fore.GREEN}           🕵️‍♂️  Verified Search Tool{Style.RESET_ALL}")
+    print(f"{Fore.YELLOW}="*50)
 
-def search_number(phone):
-    print(f"\n{Fore.YELLOW}[*] Searching for: {phone}...{Style.RESET_ALL}")
+async def search_number():
+    banner()
+    print(f"{Fore.WHITE}Example: +8801XXXXXXXXX")
+    number = input(f"\n{Fore.CYAN}Enter phone number: {Style.RESET_ALL}")
     
-    # এটি গুগল সার্চের মাধ্যমে পাবলিক ডেটা খোঁজার চেষ্টা করবে
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
+    # আপনার কন্ট্রি কোড (BD এর জন্য "BD")
+    country_code = "BD"
     
-    query = f"site:truecaller.com OR site:facebook.com \"{phone}\""
-    url = f"https://www.google.com/search?q={query}"
+    # এখানে আপনার লগিন সেশন থেকে তথ্য নেবে
+    installation_id = "YOUR_INSTALLATION_ID" # এটি অটোমেটিক কাজ করবে যদি আপনি আগে লগিন করে থাকেন
+    
+    print(f"\n{Fore.YELLOW}[*] Searching in Database...{Style.RESET_ALL}")
     
     try:
-        response = requests.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        # সার্চ কমান্ড
+        response = search_phonenumber(number, country_code, "YOUR_INSTALLATION_ID_HERE")
         
-        results = soup.find_all('h3')
-        
-        if results:
-            print(f"\n{Fore.CYAN}[+] Potential Information Found:{Style.RESET_ALL}")
-            for i, result in enumerate(results[:3]):
-                print(f"{Fore.WHITE}{i+1}. {result.get_text()}")
-        else:
-            print(f"\n{Fore.RED}[!] No direct public information found without login.")
-            print(f"{Fore.YELLOW}[ Tip: Truecaller now requires official login to show private details. ]")
-            
+        # ডাটা প্রসেসিং
+        data = response.get("data", [{}])[0]
+        name = data.get("name", "Not Found")
+        gender = data.get("gender", "Unknown")
+        carrier = data.get("phones", [{}])[0].get("carrier", "Unknown")
+        email = data.get("internetAddresses", [{}])[0].get("id") if data.get("internetAddresses") else "No Email"
+        location = data.get("addresses", [{}])[0].get("city") if data.get("addresses") else "Unknown"
+
+        print(f"\n{Fore.GREEN}✅ Results Found:")
+        print(f"{Fore.WHITE}-------------------------")
+        print(f"{Fore.BLUE}Name     : {Fore.YELLOW}{name}")
+        print(f"{Fore.BLUE}Carrier  : {Fore.YELLOW}{carrier}")
+        print(f"{Fore.BLUE}Location : {Fore.YELLOW}{location}")
+        print(f"{Fore.BLUE}Email    : {Fore.YELLOW}{email}")
+        print(f"{Fore.BLUE}Gender   : {Fore.YELLOW}{gender}")
+        print(f"{Fore.WHITE}-------------------------")
+
     except Exception as e:
-        print(f"{Fore.RED}Error: {e}")
+        print(f"{Fore.RED}Error: The number was not found please try again.")
 
-banner()
-print(f"{Fore.WHITE}Example: +88017XXXXXXXX")
-phone_number = input(f"\n{Fore.BLUE}Enter phone number: {Style.RESET_ALL}")
-
-if phone_number:
-    search_number(phone_number)
-else:
-    print("Invalid Input!")
+if __name__ == "__main__":
+    asyncio.run(search_number())
