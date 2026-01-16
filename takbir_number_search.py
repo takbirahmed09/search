@@ -20,7 +20,6 @@ def search_truecaller(phone_number):
         print("Failed to retrieve information.")
 
 def main():
-    print_figlet("Takbir Number 🕵️‍♂️ Search")
     print("Example: +880**********")
     print("Enter phone number: ", end="")
     phone_number = input().strip()
