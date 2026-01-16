@@ -4,6 +4,11 @@ from figlet import Figlet
 import re
 
 def print_figlet(text):
+    _____     _    _     _
+|_   _|_ _| | _| |__ (_)_ __
+  | |/ _` | |/ / '_ \| | '__|
+  | | (_| |   <| |_) | | |
+  |_|\__,_|_|\_\_.__/|_|_|
     f = Figlet(font='standard')
     print(f.renderText(text))
 
