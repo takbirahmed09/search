@@ -4,7 +4,7 @@ from figlet import Figlet
 import re
 
 def print_figlet(text):
-    f = Figlet(font='3d')
+    f = Figlet(font='standard')
     print(f.renderText(text))
 
 def search_truecaller(phone_number):
